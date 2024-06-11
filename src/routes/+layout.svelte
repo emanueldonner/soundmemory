@@ -1,5 +1,5 @@
 <div class="main-container">
-	<div class="nav-bar">
+	<!-- <div class="nav-bar">
 		<div class="title">
 			<div class="logo">
 				<img src="/note_logo.png" alt="logo" />
@@ -11,7 +11,7 @@
 			<a href="/soundmemory">Sound Memory</a>
 			<a href="/sequenceofdoom">Sequence of Doom</a>
 		</div>
-	</div>
+	</div> -->
 	<slot />
 </div>
 

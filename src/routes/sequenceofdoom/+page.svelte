@@ -7,6 +7,8 @@
 
 	let audioContext;
 	let player;
+	let backgroundPlayer;
+	let backgroundPlayer2;
 	const roundTitles = {
 		0: 'Welcome to the game',
 		1: 'Single Note of Doom',
@@ -36,14 +38,32 @@
 		{ note: 'F4', label: 'F', color: 'hsl(90, 80%, 45%)', type: 'white' },
 		{ note: 'G4', label: 'G', color: 'hsl(0, 80%, 60%)', type: 'white' },
 		{ note: 'A4', label: 'A', color: 'hsl(270, 80%, 45%)', type: 'white' },
-		{ note: 'B4', label: 'B', color: 'hsl(30, 80%, 45%)', type: 'white' },
-		{ note: 'C#4', label: 'C#', color: 'hsl(330, 80%, 35%)', type: 'black' },
-		{ note: 'D#4', label: 'D#', color: 'hsl(150, 80%, 35%)', type: 'black' },
+		{ note: 'B4', label: 'B', color: 'hsl(30, 80%, 55%)', type: 'white' },
+		{ note: 'C#4', label: 'C#', color: 'hsl(57, 80%, 45%)', type: 'black' },
+		{ note: 'D#4', label: 'D#', color: 'hsl(20, 80%, 45%)', type: 'black' },
 		{ note: '', label: 'Rest', color: '#aaa', type: 'break black' },
-		{ note: 'F#4', label: 'F#', color: 'hsl(90, 80%, 35%)', type: 'black' },
-		{ note: 'G#4', label: 'G#', color: 'hsl(0, 80%, 50%)', type: 'black' },
-		{ note: 'A#4', label: 'A#', color: 'hsl(270, 80%, 35%)', type: 'black' }
+		{ note: 'F#4', label: 'F#', color: 'hsl(310, 80%, 35%)', type: 'black' },
+		{ note: 'G#4', label: 'G#', color: 'hsl(200, 80%, 50%)', type: 'black' },
+		{ note: 'A#4', label: 'A#', color: 'hsl(70, 80%, 35%)', type: 'black' }
 	];
+	let backgroundNotes = [
+		'C2',
+		'C#2',
+		'D2',
+		'D#2',
+		'E2',
+		'F2',
+		'F#2',
+		'G2',
+		'G#2',
+		'A2',
+		'A#2',
+		'B2',
+		'C3',
+		'C#3',
+		'D3'
+	];
+	let backgroundPauseTime = 3000;
 	let sequence = [];
 	$: playerSequence = $playerSequenceStore;
 	let round = 0;
@@ -57,9 +77,16 @@
 
 	onMount(() => {
 		audioContext = new (window.AudioContext || window.webkitAudioContext)();
-		Soundfont.instrument(audioContext, 'string_ensemble_2').then((piano) => {
-			player = piano;
+		Soundfont.instrument(audioContext, 'string_ensemble_2').then((string) => {
+			player = string;
+			Soundfont.instrument(audioContext, 'trumpet').then((string2) => {
+				backgroundPlayer = string2;
+				Soundfont.instrument(audioContext, 'string_ensemble_1').then((string3) => {
+					backgroundPlayer2 = string3;
+				});
+			});
 		});
+
 		initialLoad = true;
 	});
 
@@ -117,6 +144,49 @@
 		}
 	};
 
+	const playBackgroundSound = (note, player) => {
+		let duration = (backgroundPauseTime / 1000) * 2;
+		let gain = 0.1;
+		if (player && player.play) {
+			player.play(note, audioContext.currentTime, {
+				gain,
+				duration
+			});
+		}
+	};
+
+	let backgroundIntervals = [];
+
+	const startBackgroundPlayback = () => {
+		const playRandomBackgroundNote = (player) => {
+			const randomNote = backgroundNotes[Math.floor(Math.random() * backgroundNotes.length)];
+			playBackgroundSound(randomNote, player);
+		};
+
+		playRandomBackgroundNote(backgroundPlayer); // Play immediately
+
+		const intervalId1 = setInterval(
+			() => playRandomBackgroundNote(backgroundPlayer),
+			backgroundPauseTime
+		);
+		backgroundIntervals.push(intervalId1);
+
+		setTimeout(() => {
+			playRandomBackgroundNote(backgroundPlayer2); // Play immediately
+
+			const intervalId2 = setInterval(
+				() => playRandomBackgroundNote(backgroundPlayer2),
+				backgroundPauseTime
+			);
+			backgroundIntervals.push(intervalId2);
+		}, backgroundPauseTime / 2);
+	};
+
+	const stopBackgroundPlayback = () => {
+		backgroundIntervals.forEach((intervalId) => clearInterval(intervalId));
+		backgroundIntervals = [];
+	};
+
 	const resetGame = () => {
 		showGameOverAlert = false;
 		round = 0;
@@ -126,6 +196,12 @@
 		pauseTime = 2000;
 		globeColor = 'white';
 		playingSequence = false;
+
+		// To stop the background playback
+		stopBackgroundPlayback();
+
+		// Start the background playback
+		startBackgroundPlayback();
 		startRound();
 		setTimeout(() => {}, 2000);
 	};
@@ -133,26 +209,32 @@
 
 <div class="container">
 	{#if initialLoad}
-		<h2>Welcome to</h2>
-		<h1>Sequence of Doom</h1>
-		<p>
-			Listen to the notes of doom and try to match them to defeat the lord of the notes of doom.
-		</p>
-		<div class="expert-container">
-			<input
-				type="checkbox"
-				bind:checked={localbeginnerMode}
-				on:change={(e) => beginnerMode.set(e.target.checked)}
-			/>
-			<label for="beginnerMode">Beginner Mode</label>
+		<div class="start-container">
+			<h2>Welcome to</h2>
+			<h1>Sequence of Doom</h1>
+			<p>
+				Listen to the notes of doom and try to match them to defeat the lord of the notes of doom.
+			</p>
+			<div class="expert-container">
+				<input
+					type="checkbox"
+					bind:checked={localbeginnerMode}
+					on:change={(e) => beginnerMode.set(e.target.checked)}
+				/>
+				<label for="beginnerMode">Beginner Mode</label>
+			</div>
+			{#if player && backgroundPlayer && backgroundPlayer2}
+				<button
+					class="start-button"
+					on:click={() => {
+						resetGame();
+						initialLoad = false;
+					}}>Start Game</button
+				>
+			{:else}
+				<p>Loading...</p>
+			{/if}
 		</div>
-		<button
-			class="start-button"
-			on:click={() => {
-				resetGame();
-				initialLoad = false;
-			}}>Start Game</button
-		>
 	{:else}
 		<div class="sequence-container">
 			<div class="sequence-globe" style="background: {globeColor}">
@@ -224,19 +306,35 @@
 		margin: 0;
 	}
 	h1 {
-		font-size: 3rem;
+		font-size: 2rem;
 	}
 	h2 {
 		font-family: 'Montserrat', sans-serif;
 		font-weight: 400;
 	}
 	.container {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 1rem;
+		width: 100vw;
+		background-image: url('/mount_doom.gif');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		color: white;
+	}
+	.start-container {
+		background: white;
+		padding: 2rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		gap: 1rem;
-		min-height: 60vh;
+		color: #333;
 	}
 	.start-button {
 		background-color: rgb(144, 231, 182);
@@ -254,13 +352,13 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		background-color: rgba(255, 255, 255, 0.1);
+		/* background-color: rgba(255, 255, 255, 0.1); */
 		box-sizing: border-box;
 		/* background: rgba(60, 92, 86, 0.351); */
 	}
 	.sequence-globe {
-		width: 160px;
-		height: 160px;
+		width: 100px;
+		height: 100px;
 		border-radius: 50%;
 		background-color: rgba(255, 255, 255, 0.8);
 		display: flex;
@@ -358,5 +456,118 @@
 	}
 	.reset-button:hover {
 		background-color: rgba(10, 160, 75, 0.8);
+	}
+
+	/* Base styles for mobile-first approach */
+	.container {
+		padding: 1rem;
+		box-sizing: border-box;
+	}
+
+	.start-container,
+	.sequence-container,
+	.game-over-alert {
+		padding: 1rem;
+		max-width: 90%;
+	}
+
+	.start-button,
+	.reset-button {
+		padding: 0.5rem;
+		font-size: 1rem;
+	}
+
+	.keyboard-container {
+		/* grid-template-columns: repeat(4, 1fr); */
+		transform: rotate(45deg) translate(3.5rem, 5rem);
+		gap: 0.5rem;
+	}
+
+	.note-container {
+		width: 100%;
+		gap: 0.5rem;
+		padding: 0.5rem;
+	}
+
+	.note {
+		width: 1.5rem;
+		height: 1.5rem;
+		font-size: 0.7rem;
+	}
+
+	/* Adjustments for larger screens */
+	@media (min-width: 600px) {
+		.start-container,
+		.sequence-container,
+		.game-over-alert {
+			padding: 2rem;
+		}
+
+		.sequence-globe {
+			width: 160px;
+			height: 160px;
+		}
+
+		.start-button,
+		.reset-button {
+			padding: 0.5rem 1rem;
+			font-size: 1.3rem;
+		}
+
+		.keyboard-container {
+			grid-template-columns: repeat(7, 1fr);
+			gap: 1rem;
+		}
+
+		.note-container {
+			width: 600px;
+			gap: 1rem;
+			padding: 1rem;
+		}
+
+		.note {
+			width: 2rem;
+			height: 2rem;
+			font-size: 0.8rem;
+		}
+	}
+
+	/* Further adjustments for very small screens */
+	@media (max-width: 320px) {
+		h1 {
+			font-size: 2rem;
+		}
+
+		h2 {
+			font-size: 1.5rem;
+		}
+
+		.start-container,
+		.sequence-container,
+		.game-over-alert {
+			padding: 1rem;
+		}
+
+		.start-button,
+		.reset-button {
+			padding: 0.5rem;
+			font-size: 0.9rem;
+		}
+
+		.keyboard-container {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 0.5rem;
+		}
+
+		.note-container {
+			gap: 0.3rem;
+			padding: 0.3rem;
+		}
+
+		.note {
+			width: 1rem;
+			height: 1rem;
+			font-size: 0.6rem;
+		}
 	}
 </style>
