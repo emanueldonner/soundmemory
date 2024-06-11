@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import Soundfont from 'soundfont-player';
-	import { instrument } from '$lib/stores';
+	import { instrument, noteLength } from '$lib/stores';
 	import Card from '../lib/components/Card.svelte';
 	import Header from '../lib/layout/Header.svelte';
 
@@ -98,12 +98,12 @@
 
 	const switchMode = (NewMode) => {
 		mode = NewMode;
-		generateCards();
+		resetGame();
 	};
 
 	const switchDifficulty = (NewDifficulty) => {
 		difficulty = NewDifficulty;
-		generateCards();
+		resetGame();
 	};
 
 	const shuffle = (array) => {
@@ -231,6 +231,7 @@
 					break;
 				default:
 					player.play(sound);
+					setTimeout(() => player.stop(), $noteLength);
 			}
 		}
 	};
