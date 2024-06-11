@@ -19,7 +19,7 @@
 		<div class="logo">
 			<img src="/logo.png" alt="logo" />
 		</div>
-		<h1>You have got to LISTEN!</h1>
+		<h2>Sound Memory</h2>
 	</div>
 	<div class="settings">
 		<!-- <select value={mode} on:change={(e) => switchMode(e.target.value)}>
@@ -84,13 +84,13 @@
 		justify-content: space-between;
 		gap: 1rem;
 		font-size: 0.9rem;
-		& h1 {
+		& h2 {
 			margin: 0;
 		}
 	}
 	.logo {
-		width: 32px;
-		height: 32px;
+		width: 24px;
+		height: 24px;
 		border-radius: 50%;
 		background-color: rgba(255, 255, 255, 0.1);
 		display: flex;
