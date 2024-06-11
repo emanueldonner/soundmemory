@@ -144,6 +144,11 @@
 		}
 	};
 
+	const repeatCurrentSequence = () => {
+		if (playingSequence) return;
+
+		playSequence();
+	};
 	const playBackgroundSound = (note, player) => {
 		let duration = (backgroundPauseTime / 1000) * 2;
 		let gain = 0.1;
@@ -185,6 +190,8 @@
 	const stopBackgroundPlayback = () => {
 		backgroundIntervals.forEach((intervalId) => clearInterval(intervalId));
 		backgroundIntervals = [];
+		backgroundPlayer.stop();
+		backgroundPlayer2.stop();
 	};
 
 	const resetGame = () => {
@@ -201,13 +208,15 @@
 		stopBackgroundPlayback();
 
 		// Start the background playback
-		startBackgroundPlayback();
+		if (!$beginnerMode) {
+			startBackgroundPlayback();
+		}
 		startRound();
 		setTimeout(() => {}, 2000);
 	};
 </script>
 
-<div class="container">
+<div class="container" class:easy={$beginnerMode}>
 	{#if initialLoad}
 		<div class="start-container">
 			<h2>Welcome to</h2>
@@ -250,14 +259,26 @@
 				<input
 					type="checkbox"
 					bind:checked={localbeginnerMode}
-					on:change={(e) => beginnerMode.set(e.target.checked)}
+					on:change={(e) => {
+						beginnerMode.set(e.target.checked);
+						if (e.target.checked) {
+							stopBackgroundPlayback();
+						} else {
+							startBackgroundPlayback();
+						}
+					}}
 				/>
 				<label for="beginnerMode">Beginner Mode</label>
 			</div></small
 		>
+		{#if $beginnerMode}
+			<div class="repeat-sequence-container">
+				<button class="repeat-button" on:click={repeatCurrentSequence}>Repeat Sequence</button>
+			</div>
+		{/if}
 		<div class="keyboard-container" class:inactive={playingSequence}>
 			{#each notes as note, index}
-				<KeyboardKey key={index} {note} onClick={handleNoteClick} />
+				<KeyboardKey beginnerMode={$beginnerMode} b key={index} {note} onClick={handleNoteClick} />
 			{/each}
 		</div>
 		<div class="player-sequence-container note-container">
@@ -326,6 +347,14 @@
 		background-repeat: no-repeat;
 		color: white;
 	}
+	.container.easy {
+		background-image: none;
+		color: #333;
+		& .keyboard-container {
+			transform: rotate(0) translate(0);
+			gap: 0.2rem;
+		}
+	}
 	.start-container {
 		background: white;
 		padding: 2rem;
@@ -380,6 +409,17 @@
 		/* background: rgba(60, 92, 86, 0.351); */
 	}
 
+	.repeat-button {
+		background-color: rgb(191, 223, 205);
+		color: black;
+		border: none;
+		padding: 0.5rem 1rem;
+		cursor: pointer;
+	}
+	.repeat-button:hover {
+		background-color: rgba(98, 206, 145, 0.8);
+	}
+
 	.keyboard-container {
 		position: relative;
 		display: grid;
@@ -391,6 +431,7 @@
 		padding: 1rem;
 		box-sizing: border-box;
 		perspective: 1000px;
+		transition: transform 0.2s ease-in-out;
 		/* background: rgba(60, 92, 86, 0.351); */
 	}
 	.inactive {
@@ -419,6 +460,8 @@
 		}
 	}
 	.note-container {
+		position: absolute;
+		bottom: 1rem;
 		display: flex;
 		width: 600px;
 		flex-wrap: wrap;
@@ -515,6 +558,7 @@
 		}
 
 		.keyboard-container {
+			transform: rotate(45deg) translate(-3.5rem, 5rem);
 			grid-template-columns: repeat(7, 1fr);
 			gap: 1rem;
 		}

@@ -1,7 +1,9 @@
 <script>
 	import NoteLabel from './NoteLabel.svelte';
+
 	export let note;
 	export let onClick;
+	export let beginnerMode;
 	const handleClick = () => {
 		onClick(note);
 	};
@@ -9,6 +11,7 @@
 
 <button
 	class="keyboard-key {note.type}-key"
+	class:easy={beginnerMode}
 	style="background-color: {note.color}"
 	on:click={handleClick}
 >
@@ -33,6 +36,9 @@
 		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
 		transition: all 0.2s ease-in-out;
 		transform-style: preserve-3d;
+	}
+	.keyboard-key.easy {
+		height: 140px;
 	}
 	.keyboard-key:hover {
 		box-shadow: 0 0 8px 10px rgba(255, 255, 255, 0.8);
