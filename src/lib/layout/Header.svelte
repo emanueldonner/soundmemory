@@ -1,13 +1,16 @@
 <script>
+	import { showNotes } from '$lib/stores';
+
 	export let mode;
 	export let modes;
 	export let switchMode;
 	export let selectedInstrument;
-	export let showNotes;
 	export let selectInstrument;
 	export let instrumentList;
 	export let difficulties;
 	export let switchDifficulty;
+
+	$: localShowNotes = $showNotes;
 </script>
 
 <div class="header">
@@ -32,7 +35,13 @@
 			{/each}
 		</select>
 		<div class="show-notes">
-			<input type="checkbox" name="shownote" id="shownote" bind:checked={showNotes} />
+			<input
+				type="checkbox"
+				name="shownote"
+				id="shownote"
+				bind:checked={localShowNotes}
+				on:change={() => showNotes.set(localShowNotes)}
+			/>
 			<label for="shownote">Show notes</label>
 		</div>
 	</div>

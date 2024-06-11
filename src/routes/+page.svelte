@@ -1,8 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
 	import Soundfont from 'soundfont-player';
-	import { flip } from 'svelte/animate';
-	import { quintOut } from 'svelte/easing';
 	import Card from '../lib/components/Card.svelte';
 	import Header from '../lib/layout/Header.svelte';
 
@@ -82,7 +80,6 @@
 		large: 6
 	};
 	let difficulty = 4;
-	let showNotes = false;
 	let tryCounter = 0;
 	let matches = 0;
 	let showWinMessage = false;
@@ -243,7 +240,6 @@
 		{switchMode}
 		{difficulty}
 		{selectedInstrument}
-		{showNotes}
 		{generateCards}
 		{selectInstrument}
 		{instrumentList}
@@ -251,7 +247,7 @@
 		{switchDifficulty}
 	/>
 	<div class="game-container">
-		<h3>Mode: {mode}</h3>
+		<span>Mode: {mode}</span>
 		<div class="counter-container">
 			<div class="try-counter">
 				<span>Tries: {tryCounter}</span>
@@ -277,7 +273,7 @@
 		<div class="grid-container">
 			<div class="grid" style="grid-template-columns: repeat({difficulty}, auto)">
 				{#each cards as card, index (card.id)}
-					<Card {card} {index} {difficulty} {handleCardClick} {showNotes} />
+					<Card {card} {index} {difficulty} {handleCardClick} />
 				{/each}
 			</div>
 		</div>

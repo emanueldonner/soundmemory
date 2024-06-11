@@ -1,9 +1,10 @@
 <script>
+	import { showNotes } from '$lib/stores';
+
 	export let card;
 	export let index;
 	export let difficulty;
 	export let handleCardClick;
-	export let showNotes;
 </script>
 
 <div
@@ -24,7 +25,7 @@
 >
 	<div class="card-inner">
 		<div class="card-front">
-			<!-- <p>{card.sound ? card.sound.name || card.sound.note1 || card.sound : ''}</p> -->
+			<!-- <p>{card.sound}</p> -->
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="1em"
@@ -39,8 +40,8 @@
 			</svg>
 		</div>
 		<div class="card-back">
-			{#if showNotes}
-				<p>{card.note}</p>
+			{#if $showNotes}
+				<p>{card.sound}</p>
 			{/if}
 		</div>
 	</div>
