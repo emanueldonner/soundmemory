@@ -16,6 +16,7 @@
 		'electric_piano_1',
 		'glockenspiel',
 		'slap_bass_1',
+		'string_ensemble_1',
 		'violin',
 		'trumpet',
 		'tenor_sax',

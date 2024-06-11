@@ -30,19 +30,19 @@
 		19: '...'
 	};
 	let notes = [
-		{ note: 'C3', label: 'C', color: 'hsl(330, 80%, 45%)', type: 'white' },
-		{ note: 'D3', label: 'D', color: 'hsl(150, 80%, 45%)', type: 'white' },
-		{ note: 'E3', label: 'E', color: 'hsl(210, 80%, 45%)', type: 'white' },
-		{ note: 'F3', label: 'F', color: 'hsl(90, 80%, 45%)', type: 'white' },
-		{ note: 'G3', label: 'G', color: 'hsl(0, 80%, 60%)', type: 'white' },
-		{ note: 'A3', label: 'A', color: 'hsl(270, 80%, 45%)', type: 'white' },
-		{ note: 'B3', label: 'B', color: 'hsl(30, 80%, 45%)', type: 'white' },
-		{ note: 'C#3', label: 'C#', color: 'hsl(330, 80%, 35%)', type: 'black' },
-		{ note: 'D#3', label: 'D#', color: 'hsl(150, 80%, 35%)', type: 'black' },
+		{ note: 'C4', label: 'C', color: 'hsl(330, 80%, 45%)', type: 'white' },
+		{ note: 'D4', label: 'D', color: 'hsl(150, 80%, 45%)', type: 'white' },
+		{ note: 'E4', label: 'E', color: 'hsl(210, 80%, 45%)', type: 'white' },
+		{ note: 'F4', label: 'F', color: 'hsl(90, 80%, 45%)', type: 'white' },
+		{ note: 'G4', label: 'G', color: 'hsl(0, 80%, 60%)', type: 'white' },
+		{ note: 'A4', label: 'A', color: 'hsl(270, 80%, 45%)', type: 'white' },
+		{ note: 'B4', label: 'B', color: 'hsl(30, 80%, 45%)', type: 'white' },
+		{ note: 'C#4', label: 'C#', color: 'hsl(330, 80%, 35%)', type: 'black' },
+		{ note: 'D#4', label: 'D#', color: 'hsl(150, 80%, 35%)', type: 'black' },
 		{ note: '', label: 'Rest', color: '#aaa', type: 'break black' },
-		{ note: 'F#3', label: 'F#', color: 'hsl(90, 80%, 35%)', type: 'black' },
-		{ note: 'G#3', label: 'G#', color: 'hsl(0, 80%, 50%)', type: 'black' },
-		{ note: 'A#3', label: 'A#', color: 'hsl(270, 80%, 35%)', type: 'black' }
+		{ note: 'F#4', label: 'F#', color: 'hsl(90, 80%, 35%)', type: 'black' },
+		{ note: 'G#4', label: 'G#', color: 'hsl(0, 80%, 50%)', type: 'black' },
+		{ note: 'A#4', label: 'A#', color: 'hsl(270, 80%, 35%)', type: 'black' }
 	];
 	let sequence = [];
 	$: playerSequence = $playerSequenceStore;
@@ -57,7 +57,7 @@
 
 	onMount(() => {
 		audioContext = new (window.AudioContext || window.webkitAudioContext)();
-		Soundfont.instrument(audioContext, 'acoustic_grand_piano').then((piano) => {
+		Soundfont.instrument(audioContext, 'string_ensemble_2').then((piano) => {
 			player = piano;
 		});
 		initialLoad = true;
@@ -66,6 +66,7 @@
 	const playSound = (note) => {
 		// Play the note sound using Soundfont.js or any other library
 		if (player && player.play) {
+			player.stop();
 			player.play(note.note);
 			console.log('Playing sound for', note);
 		}

@@ -30,8 +30,9 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding: 1rem 2rem;
+		padding: 0 2rem;
 		box-sizing: border-box;
+		height: 4rem;
 		/* background: rgba(255, 201, 201, 0.351); */
 	}
 	.title {
@@ -41,7 +42,7 @@
 		justify-content: space-between;
 		gap: 1rem;
 		font-size: 0.9rem;
-
+		padding: 1rem 0;
 		& h1 {
 			margin: 0;
 		}
@@ -50,7 +51,7 @@
 		width: 32px;
 		height: 32px;
 		border-radius: 50%;
-		background-color: rgba(255, 255, 255, 0.1);
+		/* background-color: rgba(255, 255, 255, 0.1); */
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -58,5 +59,33 @@
 	.logo img {
 		width: 100%;
 		height: 100%;
+	}
+
+	.menu {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		gap: 1px;
+	}
+	.menu a {
+		text-decoration: none;
+		color: #333;
+		font-size: 0.9rem;
+		padding: 0.5rem 1rem;
+		border: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 4rem;
+		background-color: rgba(150, 150, 150, 0.151);
+		box-shadow: inset 0 0 0 rgba(0, 0, 0, 0);
+		transition: all 0.2s ease-in-out;
+	}
+	.menu a:hover {
+		transform: translateY(-2px);
+		box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.2);
+		background-color: rgba(255, 255, 255, 0.351);
 	}
 </style>
