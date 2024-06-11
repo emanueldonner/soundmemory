@@ -174,7 +174,7 @@
 			default:
 				isMatch = firstCard.sound === secondCard.sound;
 		}
-		if (firstCard.note === secondCard.note) {
+		if (isMatch) {
 			firstCard.matched = true;
 			secondCard.matched = true;
 			matches++;

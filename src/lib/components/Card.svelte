@@ -24,7 +24,7 @@
 >
 	<div class="card-inner">
 		<div class="card-front">
-			<p>{card.sound ? card.sound.name || card.sound.note1 || card.sound : ''}</p>
+			<!-- <p>{card.sound ? card.sound.name || card.sound.note1 || card.sound : ''}</p> -->
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="1em"

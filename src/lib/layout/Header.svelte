@@ -15,11 +15,11 @@
 		<h2>You have got to LISTEN!</h2>
 	</div>
 	<div class="settings">
-		<select value={mode} on:change={(e) => switchMode(e.target.value)}>
+		<!-- <select value={mode} on:change={(e) => switchMode(e.target.value)}>
 			{#each modes as mode}
 				<option value={mode}>{mode}</option>
 			{/each}
-		</select>
+		</select> -->
 		<select value={4} on:change={(e) => switchDifficulty(e.target.value)}>
 			{#each Object.keys(difficulties) as diff}
 				<option value={difficulties[diff]}>{diff}</option>
