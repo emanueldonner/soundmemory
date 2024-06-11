@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import Soundfont from 'soundfont-player';
+	import { instrument } from '$lib/stores';
 	import Card from '../lib/components/Card.svelte';
 	import Header from '../lib/layout/Header.svelte';
 
@@ -9,7 +10,7 @@
 	let cards = [];
 	let firstCard = null;
 	let secondCard = null;
-	let selectedInstrument = 'acoustic_grand_piano';
+
 	const instrumentList = [
 		'acoustic_grand_piano',
 		'electric_piano_1',
@@ -86,9 +87,12 @@
 
 	onMount(() => {
 		audioContext = new (window.AudioContext || window.webkitAudioContext)();
-		Soundfont.instrument(audioContext, 'acoustic_grand_piano').then((piano) => {
+		Soundfont.instrument(audioContext, $instrument).then((piano) => {
 			player = piano;
 			generateCards();
+		});
+		instrument.subscribe((value) => {
+			selectInstrument();
 		});
 	});
 
@@ -138,7 +142,6 @@
 			cardSounds.push({ note1, note2, interval: interval.name });
 		}
 		cardSounds = [...cardSounds, ...cardSounds];
-		console.log(cardSounds);
 		return cardSounds;
 	};
 
@@ -146,7 +149,6 @@
 		if ((firstCard && secondCard) || card.revealed || card.matched) return;
 
 		card.revealed = true;
-		console.log(card.sound, card.revealed);
 		playSound(card.sound);
 
 		if (!firstCard) {
@@ -176,7 +178,6 @@
 			secondCard.matched = true;
 			matches++;
 			cards = [...cards];
-			console.log('match');
 			checkForWin();
 			resetCards();
 		} else {
@@ -204,7 +205,6 @@
 		if (player && player.play) {
 			switch (mode) {
 				case 'intervals':
-					console.log('playSound', sound);
 					player.play(sound.note1);
 					setTimeout(() => player.play(sound.note2), 1000);
 					break;
@@ -225,9 +225,7 @@
 		generateCards();
 	};
 	const selectInstrument = () => {
-		console.log('selectInstrument', selectedInstrument);
-		player = Soundfont.instrument(audioContext, selectedInstrument).then((piano) => {
-			console.log('player', piano);
+		player = Soundfont.instrument(audioContext, $instrument).then((piano) => {
 			player = piano;
 		});
 	};
@@ -239,7 +237,6 @@
 		{modes}
 		{switchMode}
 		{difficulty}
-		{selectedInstrument}
 		{generateCards}
 		{selectInstrument}
 		{instrumentList}
@@ -247,7 +244,6 @@
 		{switchDifficulty}
 	/>
 	<div class="game-container">
-		<span>Mode: {mode}</span>
 		<div class="counter-container">
 			<div class="try-counter">
 				<span>Tries: {tryCounter}</span>
@@ -288,6 +284,7 @@
 		justify-content: center;
 		gap: 1rem;
 		height: 100vh;
+		background: #f8f7f4;
 	}
 
 	.game-container {
