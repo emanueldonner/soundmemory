@@ -106,11 +106,29 @@
 		generateCards();
 	};
 
+	const shuffle = (array) => {
+		let currentIndex = array.length,
+			randomIndex;
+
+		// While there remain elements to shuffle...
+		while (currentIndex !== 0) {
+			// Pick a remaining element...
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex--;
+
+			// And swap it with the current element.
+			[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+		}
+		return array;
+	};
+
 	const generateCards = () => {
 		// take diffulty value as number for the amount of notes
 		let amountOfNotes = (parseInt(difficulty) * parseInt(difficulty)) / 2;
+		// Randomize order of notes
+		let shuffledNotes = shuffle(notes);
 		// truncate the notes array based on the amount of notes
-		notesArray = notes.slice(0, amountOfNotes);
+		notesArray = shuffledNotes.slice(0, amountOfNotes);
 
 		switch (mode) {
 			case 'intervals':

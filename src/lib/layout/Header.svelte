@@ -55,7 +55,7 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding: 1rem;
+		padding: 1rem 2rem;
 		box-sizing: border-box;
 		/* background: rgba(60, 92, 86, 0.351); */
 	}
@@ -78,6 +78,7 @@
 		border: none;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
+		font-family: 'Montserrat', sans-serif;
 		font-size: 0.9rem;
 	}
 	input[type='checkbox'] {
