@@ -2,7 +2,7 @@
 	<!-- <div class="nav-bar">
 		<div class="title">
 			<div class="logo">
-				<img src="/note_logo.png" alt="logo" />
+				<img src="/note_memory_logo.png" alt="logo" />
 			</div>
 			<h1>You have got to LISTEN!</h1>
 		</div>

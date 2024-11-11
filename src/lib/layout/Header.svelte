@@ -17,7 +17,7 @@
 <div class="header">
 	<div class="title">
 		<div class="logo">
-			<img src="/logo.png" alt="logo" />
+			<img src="/memory_logo.png" alt="logo" />
 		</div>
 		<h2>Sound Memory</h2>
 	</div>

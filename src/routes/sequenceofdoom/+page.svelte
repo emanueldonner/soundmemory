@@ -224,6 +224,9 @@
 			<p>
 				Listen to the notes of doom and try to match them to defeat the lord of the notes of doom.
 			</p>
+			<p class="disclaimer">
+				If you're getting dizzy or overwhelmed, consult the 'Heeeelp!!' button. <br />
+			</p>
 			<div class="expert-container">
 				<input
 					type="checkbox"
@@ -252,12 +255,12 @@
 				{/if}
 			</div>
 		</div>
-		<h1>Sequence of Doom</h1>
 		<p>Round: {round} - "{roundTitles[round]}"</p>
 		<small
 			><div class="expert-container">
 				<input
 					type="checkbox"
+					id="beginnerMode"
 					bind:checked={localbeginnerMode}
 					on:change={(e) => {
 						beginnerMode.set(e.target.checked);
@@ -268,7 +271,7 @@
 						}
 					}}
 				/>
-				<label for="beginnerMode">Beginner Mode</label>
+				<label for="beginnerMode">{$beginnerMode ? 'Make it a challenge!' : 'Heeeelp!!'}</label>
 			</div></small
 		>
 		{#if $beginnerMode}
@@ -278,7 +281,13 @@
 		{/if}
 		<div class="keyboard-container" class:inactive={playingSequence}>
 			{#each notes as note, index}
-				<KeyboardKey beginnerMode={$beginnerMode} b key={index} {note} onClick={handleNoteClick} />
+				<KeyboardKey
+					beginnerMode={$beginnerMode}
+					moveDelay={100 + index * 1000}
+					key={index}
+					{note}
+					onClick={handleNoteClick}
+				/>
 			{/each}
 		</div>
 		<div class="player-sequence-container note-container">
@@ -294,7 +303,7 @@
 			<h2>Game Over</h2>
 			<p>You played the wrong note of doom.</p>
 			<p>The correct sequence was</p>
-			<div class="note-container">
+			<div style="display: flex; gap: .5rem;">
 				{#each sequence as note}
 					<div class="note" style="background: {note.color}">
 						<NoteLabel {note} />
@@ -302,7 +311,7 @@
 				{/each}
 			</div>
 			<p>You played</p>
-			<div class="note-container player-note-container">
+			<div style="display: flex; gap: .5rem;" class=" player-note-container">
 				{#each playerSequence as note}
 					<div class="note" style="background: {note.color}">
 						<NoteLabel {note} />
@@ -322,6 +331,7 @@
 </div>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Quintessential&display=swap');
 	h1,
 	h2 {
 		margin: 0;
@@ -330,7 +340,7 @@
 		font-size: 2rem;
 	}
 	h2 {
-		font-family: 'Montserrat', sans-serif;
+		font-family: 'Quintessential', cursive;
 		font-weight: 400;
 	}
 	.container {
@@ -345,7 +355,9 @@
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
+		background-attachment: fixed;
 		color: white;
+		font-family: 'Quintessential', cursive;
 	}
 	.container.easy {
 		background-image: none;
@@ -375,6 +387,10 @@
 	.start-button:hover {
 		background-color: rgba(10, 160, 75, 0.8);
 	}
+	.disclaimer {
+		background: #ff432277;
+		padding: 0.5rem 1rem;
+	}
 	.sequence-container {
 		position: relative;
 		display: flex;
@@ -396,9 +412,24 @@
 		font-size: 1.5rem;
 		color: #fff;
 		transition: background-color 0.2s ease-out;
+		animation: globeGlow 8000ms linear infinite;
+	}
+	@keyframes globeGlow {
+		0% {
+			filter: drop-shadow(0 0 4px #fff);
+		}
+		50% {
+			filter: drop-shadow(0 0 24px #fff);
+		}
+		100% {
+			filter: drop-shadow(0 0 4px #fff);
+		}
 	}
 
 	.expert-container {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
@@ -407,6 +438,20 @@
 		/* padding: 1rem; */
 		box-sizing: border-box;
 		/* background: rgba(60, 92, 86, 0.351); */
+		& input {
+			opacity: 0;
+		}
+		& label {
+			cursor: pointer;
+			background-color: rgba(37, 36, 36, 0.135);
+			font-size: 0.9rem;
+			padding: 0.5rem 1rem;
+			border: none;
+			transition: all 0.2s ease-in-out;
+		}
+		& label:hover {
+			background-color: rgba(66, 58, 58, 0.2);
+		}
 	}
 
 	.repeat-button {
@@ -433,10 +478,25 @@
 		perspective: 1000px;
 		transition: transform 0.2s ease-in-out;
 		/* background: rgba(60, 92, 86, 0.351); */
+		animation: moveKeyboard 120000ms ease-in-out infinite;
+	}
+	@keyframes moveKeyboard {
+		0% {
+			transform: rotate(0deg) translate(-3.5rem, 5rem);
+		}
+		50% {
+			transform: rotate(1200deg) translate(-3.5rem, 5rem);
+		}
+		100% {
+			transform: rotate(0deg) translate(3.5rem, 5rem);
+		}
 	}
 	.inactive {
 		pointer-events: none;
 		/* opacity: 0.5; */
+	}
+	.container.easy .keyboard-container {
+		animation: none;
 	}
 
 	.game-over-alert {

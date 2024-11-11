@@ -18,6 +18,6 @@
 			/>
 		</svg>
 	{:else}
-		{note.label}
+		{note.note}
 	{/if}
 {/if}
